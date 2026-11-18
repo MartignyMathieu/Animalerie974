@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\TypeProduit;
 use App\Repository\CategorieRepository;
 use App\Repository\ProduitRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,6 +28,7 @@ final class AnimalerieController extends AbstractController
         ProduitRepository $produitRepository,
         ?string $slug = null,
         #[MapQueryParameter] ?string $q = null,
+        #[MapQueryParameter] ?TypeProduit $type = null,
     ): Response {
         $categorie = null;
         if (null !== $slug) {
@@ -39,7 +41,9 @@ final class AnimalerieController extends AbstractController
             // Sous-catégories de l'univers courant (ou frères si on est déjà sur un animal).
             'animaux' => $categorie ? $categorieRepository->findBy(['parent' => $categorie->getUnivers()], ['id' => 'ASC']) : [],
             'recherche' => $q,
-            'produits' => $produitRepository->rechercher($categorie, $q),
+            'type' => $type,
+            'types' => TypeProduit::cases(),
+            'produits' => $produitRepository->rechercher($categorie, $q, $type),
         ]);
     }
 }

@@ -18,7 +18,7 @@ final class AideController extends AbstractController
         ['question' => 'Quels moyens de paiement acceptez-vous ?', 'reponse' => 'Carte bancaire, virement, et paiement en plusieurs fois selon le montant de votre panier. Les paiements sont sécurisés.'],
         ['question' => 'Puis-je retourner un produit ?', 'reponse' => 'Vous disposez de 14 jours après réception pour retourner un produit non ouvert. Les denrées alimentaires entamées ne sont pas reprises.'],
         ['question' => "Comment choisir l'alimentation de mon animal ?", 'reponse' => 'Cela dépend de son espèce, de son âge et de sa taille. Écrivez-nous via le formulaire ci-dessous : nos conseillers vous répondront.'],
-        ['question' => 'Comment modifier mon panier ?', 'reponse' => 'Depuis la page Panier, vous pouvez changer les quantités ou retirer un article. Votre panier est conservé si vous créez un compte.'],
+        ['question' => 'Comment modifier mon panier ?', 'reponse' => 'Depuis la page Panier, vous pouvez changer les quantités ou retirer un article. Il est conservé 30 jours sur votre appareil, même si vous quittez le site.'],
     ];
 
     #[Route('/aide', name: 'app_aide', methods: ['GET', 'POST'])]

@@ -26,11 +26,6 @@ class Panier
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $modifieLe;
 
-    /** Propriétaire du panier une fois connecté (null pour un visiteur anonyme). */
-    #[ORM\OneToOne]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private ?Utilisateur $utilisateur = null;
-
     /** @var Collection<int, LignePanier> */
     #[ORM\OneToMany(targetEntity: LignePanier::class, mappedBy: 'panier', cascade: ['persist'], orphanRemoval: true)]
     private Collection $lignes;
@@ -51,18 +46,6 @@ class Panier
     public function getToken(): ?string
     {
         return $this->token;
-    }
-
-    public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
-    }
-
-    public function setUtilisateur(?Utilisateur $utilisateur): static
-    {
-        $this->utilisateur = $utilisateur;
-
-        return $this;
     }
 
     public function getCreeLe(): \DateTimeImmutable

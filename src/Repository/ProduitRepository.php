@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Categorie;
 use App\Entity\Produit;
+use App\Enum\TypeProduit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,7 +21,7 @@ class ProduitRepository extends ServiceEntityRepository
     /**
      * @return Produit[]
      */
-    public function rechercher(?Categorie $categorie = null, ?string $recherche = null): array
+    public function rechercher(?Categorie $categorie = null, ?string $recherche = null, ?TypeProduit $type = null): array
     {
         $qb = $this->createQueryBuilder('p')
             ->addSelect('c')
@@ -30,6 +31,10 @@ class ProduitRepository extends ServiceEntityRepository
         if (null !== $categorie) {
             // La catégorie elle-même et ses sous-catégories (ex. « NAC » + « Lapins »).
             $qb->andWhere('p.categorie = :categorie OR c.parent = :categorie')->setParameter('categorie', $categorie);
+        }
+
+        if (null !== $type) {
+            $qb->andWhere('p.type = :type')->setParameter('type', $type);
         }
 
         if (null !== $recherche && '' !== trim($recherche)) {

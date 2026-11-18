@@ -10,7 +10,7 @@
     {% if categorie and categorie.parent %}
         <a href="{{ path('app_catalogue', {slug: categorie.parent.slug}) }}">{{ categorie.parent.nom|split(' (')[0] }}</a> ›
     {% endif %}
-    {{ categorie ? categorie.nom : 'Tous les produits' }}
+    {{ categorie ? categorie.nom : (type ? type.libelle : 'Tous les produits') }}
 </p>
 
 {% if categorie %}
@@ -35,10 +35,18 @@
     {% endif %}
 {% else %}
     <div class="titre-ligne">
-        <h1>Tous les produits</h1>
+        <h1>{{ type ? type.libelle : 'Tous les produits' }}</h1>
         <span class="compteur">{{ produits|length }} produit{{ produits|length > 1 ? 's' }}</span>
     </div>
 {% endif %}
+
+{# Filtre par type : animaux, alimentation, loisirs, mode #}
+<nav class="puces" aria-label="Types de produits">
+    <a class="{{ type is null ? 'is-active' }}" href="{{ path('app_catalogue', {slug: categorie.slug ?? null, q: recherche}) }}">Tous</a>
+    {% for t in types %}
+        <a class="{{ type == t ? 'is-active' }}" href="{{ path('app_catalogue', {slug: categorie.slug ?? null, q: recherche, type: t.value}) }}">{{ t.libelle }}</a>
+    {% endfor %}
+</nav>
 
 {% if recherche %}
     <p>Résultats pour « <strong>{{ recherche }}</strong> » – <a href="{{ path('app_catalogue', {slug: categorie.slug ?? null}) }}">effacer</a></p>

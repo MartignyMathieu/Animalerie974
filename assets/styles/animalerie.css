@@ -301,7 +301,7 @@ img { display: block; }
 .flash--succes { background: var(--vert-clair); color: var(--vert-fonce); border: 1px solid #c9e1b4; }
 .flash--erreur { background: #fde8e6; color: #a8281f; border: 1px solid #f4c4bf; }
 
-/* ----- Formulaires (connexion, inscription, contact) ----- */
+/* ----- Formulaire de contact ----- */
 .formulaire { display: grid; gap: 16px; text-align: left; }
 .formulaire label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 14px; }
 .formulaire input, .formulaire textarea {
@@ -312,20 +312,7 @@ img { display: block; }
 .formulaire ul { margin: 6px 0 0; padding: 0; list-style: none; color: #a8281f; font-size: 14px; }
 .formulaire textarea { resize: vertical; }
 
-.auth { display: grid; place-items: start center; padding: 20px 0; }
-.auth__carte {
-    width: 100%; max-width: 440px; padding: 32px; text-align: center;
-    background: #fff; border: 1px solid var(--bord); border-radius: 24px; box-shadow: var(--ombre);
-}
-.auth__carte h1 { font-size: 30px; }
-.auth__icone {
-    display: inline-grid; place-items: center; width: 64px; height: 64px; margin-bottom: 12px;
-    border-radius: 50%; background: var(--vert-clair); color: var(--vert-fonce); font-size: 32px;
-}
-.auth__sous-titre { margin: 6px 0 20px; color: var(--gris); }
-.auth__pied { margin: 18px 0 0; color: var(--gris); }
-.auth__pied a, .compte__carte a:not(.btn) { color: var(--vert-fonce); font-weight: 600; }
-.auth .flash { margin: 0 0 16px; text-align: left; }
+.aide__intro { margin: 6px 0 20px; color: var(--gris); }
 
 /* ----- Panier ----- */
 .panier { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
@@ -361,19 +348,6 @@ img { display: block; }
 .vide--panier { display: grid; justify-items: center; gap: 12px; color: var(--vert); }
 .vide--panier p { margin: 0; color: var(--gris); font-size: 18px; }
 
-/* ----- Compte ----- */
-.compte { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.compte__carte {
-    display: grid; align-content: start; justify-items: start; gap: 12px; padding: 24px;
-    background: #fff; border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre);
-}
-.compte__carte h2 { display: flex; align-items: center; gap: 8px; font-size: 20px; }
-.compte__carte h2 .ico { color: var(--vert); }
-.compte__carte p { margin: 0; color: var(--gris); }
-.compte__carte dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
-.compte__carte dt { color: var(--gris); }
-.compte__carte dd { margin: 0; font-weight: 600; word-break: break-word; }
-
 /* ----- Aide ----- */
 .aide { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: start; }
 .aide h2 { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 22px; }
@@ -385,12 +359,26 @@ img { display: block; }
 .faq[open] summary::after { content: "−"; }
 .faq p { margin: 0; padding: 0 18px 16px; color: var(--gris); }
 .aide__contact { padding: 26px; background: #fff; border: 1px solid var(--bord); border-radius: 22px; box-shadow: var(--ombre); scroll-margin-top: 16px; }
-.aide__contact .auth__sous-titre { margin-top: 0; }
+.aide__contact .aide__intro { margin-top: 0; }
 
 @media (max-width: 960px) {
-    .panier, .aide, .compte { grid-template-columns: 1fr; }
+    .panier, .aide { grid-template-columns: 1fr; }
     .panier__ligne { grid-template-columns: 72px 1fr; }
     .panier__visuel { width: 72px; height: 72px; }
     .panier__soustotal { text-align: left; }
     .panier__resume { position: static; }
 }
+
+/* ----- Menu « Tous les produits » (par type) ----- */
+.menu { position: relative; }
+.menu summary { list-style: none; cursor: pointer; }
+.menu summary::-webkit-details-marker { display: none; }
+.menu[open] .chevron { transform: rotate(180deg); }
+.menu__liste {
+    position: absolute; z-index: 10; top: calc(100% + 8px); left: 0; min-width: 240px;
+    margin: 0; padding: 8px; list-style: none;
+    background: #fff; border: 1px solid var(--bord); border-radius: 16px; box-shadow: var(--ombre-forte);
+}
+.menu__liste a { display: block; padding: 10px 14px; border-radius: 10px; font-weight: 600; }
+.menu__liste a:hover { background: var(--vert-clair); color: var(--vert-fonce); }
+.carte__type { color: var(--vert); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }

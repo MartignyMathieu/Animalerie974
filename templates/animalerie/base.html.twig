@@ -24,15 +24,22 @@
             <input type="search" name="q" value="{{ recherche ?? '' }}" placeholder="Rechercher un produit, une marque..." aria-label="Rechercher">
         </form>
 
-        <nav class="actions" aria-label="Compte">
+        <nav class="actions" aria-label="Aide et panier">
             <a class="actions__item" href="{{ path('app_aide') }}">{{ m.icone('question') }}<small>Aide</small></a>
-            <a class="actions__item" href="{{ path('app_compte') }}">{{ m.icone('user') }}<small>{{ app.user ? app.user.prenom : 'Mon compte' }}</small></a>
             <a class="actions__item" href="{{ path('app_panier') }}" aria-label="Panier ({{ panier_nombre() }} article{{ panier_nombre() > 1 ? 's' }})">{{ m.icone('shopping-cart') }}<small>Panier</small><b class="actions__badge">{{ panier_nombre() }}</b></a>
         </nav>
     </div>
 
     <div class="top__row top__row--nav">
-        <a class="btn btn--menu" href="{{ path('app_catalogue') }}">{{ m.icone('list') }} Tous les produits <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+        <details class="menu">
+            <summary class="btn btn--menu">{{ m.icone('list') }} Tous les produits <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+            <ul class="menu__liste">
+                <li><a href="{{ path('app_catalogue') }}">Tous les produits</a></li>
+                {% for t in enum('App\\Enum\\TypeProduit').cases %}
+                    <li><a href="{{ path('app_catalogue', {type: t.value}) }}">{{ t.libelle }}</a></li>
+                {% endfor %}
+            </ul>
+        </details>
         <nav class="univers-nav" aria-label="Univers">
             {% for u in nav_univers %}
                 <a class="{{ categorie is defined and categorie and categorie.univers.id == u.id ? 'is-active' }}"

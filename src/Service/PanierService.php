@@ -5,14 +5,12 @@ namespace App\Service;
 use App\Entity\LignePanier;
 use App\Entity\Panier;
 use App\Entity\Produit;
-use App\Entity\Utilisateur;
 use App\Repository\PanierRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Panier du visiteur : lié à son compte s'il est connecté, sinon à un jeton stocké en session.
+ * Panier du visiteur, retrouvé grâce à un jeton gardé dans sa session (cookie de 30 jours).
  */
 final class PanierService
 {
@@ -22,19 +20,15 @@ final class PanierService
         private readonly RequestStack $requestStack,
         private readonly PanierRepository $paniers,
         private readonly EntityManagerInterface $em,
-        private readonly Security $security,
     ) {
     }
 
-    /** Panier courant, ou null s'il n'existe pas encore (rien n'est créé). */
+    /** Panier du visiteur, ou null s'il n'existe pas encore (rien n'est créé). */
     public function courant(): ?Panier
     {
-        $utilisateur = $this->security->getUser();
-        if ($utilisateur instanceof Utilisateur) {
-            return $this->paniers->findOneBy(['utilisateur' => $utilisateur]);
-        }
+        $token = $this->requestStack->getSession()->get(self::SESSION_TOKEN);
 
-        return $this->panierAnonyme();
+        return \is_string($token) ? $this->paniers->findOneBy(['token' => $token]) : null;
     }
 
     public function nombreArticles(): int
@@ -45,7 +39,7 @@ final class PanierService
     /** Ajoute au panier (limité au stock). Retourne la quantité réellement ajoutée. */
     public function ajouter(Produit $produit, int $quantite = 1): int
     {
-        $panier = $this->obtenir();
+        $panier = $this->courant() ?? $this->creer();
         $ligne = $this->ligne($panier, $produit);
         $avant = $ligne?->getQuantite() ?? 0;
         $apres = min($avant + max(1, $quantite), $produit->getStock());
@@ -88,58 +82,13 @@ final class PanierService
         $this->modifier($produit, 0);
     }
 
-    /** À la connexion : rattache le panier anonyme au compte, ou le fusionne avec celui du compte. */
-    public function fusionner(Utilisateur $utilisateur): void
+    private function creer(): Panier
     {
-        $anonyme = $this->panierAnonyme();
-        if (null === $anonyme) {
-            return;
-        }
-
-        $existant = $this->paniers->findOneBy(['utilisateur' => $utilisateur]);
-        if (null === $existant) {
-            $anonyme->setUtilisateur($utilisateur)->touch();
-        } else {
-            foreach ($anonyme->getLignes() as $ligne) {
-                $produit = $ligne->getProduit();
-                $cible = $this->ligne($existant, $produit);
-                if (null === $cible) {
-                    $cible = (new LignePanier())->setProduit($produit)->setQuantite(0);
-                    $existant->addLigne($cible);
-                }
-                $cible->setQuantite(min($cible->getQuantite() + $ligne->getQuantite(), max(1, $produit->getStock())));
-            }
-            $existant->touch();
-            $this->em->remove($anonyme);
-        }
-        $this->em->flush();
-        $this->requestStack->getSession()->remove(self::SESSION_TOKEN);
-    }
-
-    private function obtenir(): Panier
-    {
-        $panier = $this->courant();
-        if (null !== $panier) {
-            return $panier;
-        }
-
         $panier = new Panier();
-        $utilisateur = $this->security->getUser();
-        if ($utilisateur instanceof Utilisateur) {
-            $panier->setUtilisateur($utilisateur);
-        } else {
-            $this->requestStack->getSession()->set(self::SESSION_TOKEN, $panier->getToken());
-        }
+        $this->requestStack->getSession()->set(self::SESSION_TOKEN, $panier->getToken());
         $this->em->persist($panier);
 
         return $panier;
-    }
-
-    private function panierAnonyme(): ?Panier
-    {
-        $token = $this->requestStack->getSession()->get(self::SESSION_TOKEN);
-
-        return \is_string($token) ? $this->paniers->findOneBy(['token' => $token, 'utilisateur' => null]) : null;
     }
 
     private function ligne(Panier $panier, Produit $produit): ?LignePanier

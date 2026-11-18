@@ -3,7 +3,10 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    # Le panier est retrouvé grâce à la session : le cookie dure 30 jours, même après fermeture du navigateur.
+    session:
+        cookie_lifetime: 2592000
+        gc_maxlifetime: 2592000
 
     #esi: true
     #fragments: true

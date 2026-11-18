@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TypeProduit;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +42,10 @@ class Produit
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    /** Animal vivant, alimentation, loisirs ou mode. */
+    #[ORM\Column(length: 20, enumType: TypeProduit::class)]
+    private TypeProduit $type = TypeProduit::Loisirs;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     #[ORM\JoinColumn(nullable: false)]
@@ -125,6 +130,18 @@ class Produit
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getType(): TypeProduit
+    {
+        return $this->type;
+    }
+
+    public function setType(TypeProduit $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

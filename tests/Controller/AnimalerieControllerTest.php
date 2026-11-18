@@ -54,8 +54,49 @@ final class AnimalerieControllerTest extends WebTestCase
         $client->request('GET', '/catalogue/canaris');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorCount(1, '.carte');
-        self::assertSelectorTextContains('.carte__nom', 'canari');
+        // Les graines pour canari et le canari lui-même.
+        self::assertSelectorCount(2, '.carte');
+        self::assertSelectorTextContains('.carte__nom', 'Canari chanteur');
+    }
+
+    public function testCatalogueFiltreParType(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/catalogue?type=animal');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorCount(11, '.carte');
+        self::assertSelectorTextContains('h1', 'Animaux');
+
+        $client->request('GET', '/catalogue?type=mode');
+        self::assertSelectorCount(3, '.carte');
+    }
+
+    public function testFiltreParTypeDansUnUnivers(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/catalogue/nac?type=alimentation');
+
+        self::assertResponseIsSuccessful();
+        // Menu lapin, mélange cobaye : seule l'alimentation de l'univers NAC.
+        self::assertSelectorCount(2, '.carte');
+        self::assertSelectorNotExists('.carte__type:contains("Animaux")');
+    }
+
+    public function testTypeInconnuRenvoieUneErreur(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/catalogue?type=dragon');
+
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testLePanierDureTrenteJours(): void
+    {
+        static::bootKernel();
+
+        $options = static::getContainer()->getParameter('session.storage.options');
+        self::assertSame(30 * 24 * 3600, $options['cookie_lifetime']);
     }
 
     public function testCatalogueUniversInconnu(): void
