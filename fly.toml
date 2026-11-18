@@ -1,0 +1,34 @@
+# Configuration Fly.io — voir https://fly.io/docs/reference/configuration/
+app = 'animalerie974'
+primary_region = 'jnb' # Johannesburg : la région la plus proche de La Réunion
+
+[build]
+
+[env]
+  APP_ENV = 'prod'
+  APP_DEBUG = '0'
+  # Base SQLite sur le volume monté dans /data. APP_SECRET est un secret : fly secrets set APP_SECRET=...
+  DATABASE_URL = 'sqlite:////data/animalerie.db'
+
+[mounts]
+  source = 'data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = '40s'
+    interval = '30s'
+    method = 'GET'
+    timeout = '5s'
+    path = '/'
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1

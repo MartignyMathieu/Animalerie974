@@ -1,0 +1,5 @@
+# Les scripts et la configuration Docker s'exécutent sous Linux : fins de ligne Unix obligatoires.
+*.sh text eol=lf
+docker/* text eol=lf
+Dockerfile text eol=lf
+fly.toml text eol=lf

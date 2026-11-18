@@ -1,0 +1,31 @@
+.git
+.github
+.idea
+.vscode
+.claude
+node_modules
+
+# Généré dans l'image
+var/
+vendor/
+public/assets/
+public/bundles/
+assets/vendor/
+
+# Secrets et configuration locale
+.env.local
+.env.local.php
+.env.*.local
+.env.dev
+.env.test
+
+# Inutile en production
+tests/
+compose.yaml
+compose.override.yaml
+Dockerfile
+.dockerignore
+fly.toml
+*.md
+phpunit.dist.xml
+phpunit.xml

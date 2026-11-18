@@ -4,3 +4,9 @@ doctrine_migrations:
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
     enable_profiler: false
+
+# Production (Fly.io) : base SQLite, avec ses propres migrations (migrations/ est écrit pour MySQL).
+when@prod:
+    doctrine_migrations:
+        migrations_paths:
+            'DoctrineMigrations': '%kernel.project_dir%/migrations_sqlite'
