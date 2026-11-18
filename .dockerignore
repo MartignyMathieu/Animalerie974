@@ -29,3 +29,4 @@ fly.toml
 *.md
 phpunit.dist.xml
 phpunit.xml
+render.yaml

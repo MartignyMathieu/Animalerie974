@@ -1,0 +1,21 @@
+# Blueprint Render — https://render.com/docs/blueprint-spec
+# Offre gratuite : le service s'endort après ~15 min d'inactivité et la base SQLite
+# est recréée (catalogue de démonstration) à chaque redémarrage : comptes et paniers ne sont pas conservés.
+services:
+  - type: web
+    name: animalerie974
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_DEBUG
+        value: "0"
+      - key: DATABASE_URL
+        value: sqlite:////data/animalerie.db
+      - key: APP_SECRET
+        generateValue: true
