@@ -1,0 +1,84 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Animalerie 974 – Le bonheur de vos animaux{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<section class="hero">
+    <div class="hero__texte">
+        <span class="pastille">Votre animalerie en ligne à La Réunion</span>
+        <h1>Le bonheur de vos animaux, au quotidien</h1>
+        <p>Alimentation, accessoires, soins et bien-être pour tous vos compagnons.</p>
+        <a class="btn btn--grand" href="{{ path('app_catalogue') }}">Découvrir nos produits {{ m.icone('arrow-right') }}</a>
+    </div>
+    <div class="hero__scene" aria-hidden="true">
+        <img class="hero__scene-photo" src="{{ asset('images/hero/hero-animaux.jpg') }}" alt="">
+        <img class="hero__scene-oiseau" src="{{ asset('images/cutouts/perruche.png') }}" alt="">
+    </div>
+</section>
+
+<section class="atouts">
+    <div>{{ m.icone('truck') }}<p><strong>Livraison à La Réunion</strong><small>Rapide et suivie</small></p></div>
+    <div>{{ m.icone('credit-card') }}<p><strong>Paiement sécurisé</strong><small>CB, virement, en plusieurs fois</small></p></div>
+    <div>{{ m.icone('seal-check') }}<p><strong>Produits de qualité</strong><small>Sélectionnés avec soin</small></p></div>
+    <div>{{ m.icone('headset') }}<p><strong>Conseils d'experts</strong><small>Pour le bien-être de vos animaux</small></p></div>
+</section>
+
+<section>
+    <div class="titre-ligne">
+        <h2>Nos univers</h2>
+        <a href="{{ path('app_catalogue') }}">Voir tous les univers {{ m.icone('arrow-right') }}</a>
+    </div>
+    <div class="univers-grille">
+        {% for u in univers %}
+            <a class="univers-carte univers-carte--{{ loop.index0 % 7 }}" href="{{ path('app_catalogue', {slug: u.slug}) }}">
+                <span class="univers-carte__photo">{% if u.image %}<img src="{{ asset(u.image) }}" alt="" loading="lazy">{% endif %}</span>
+                <strong>{{ u.nom|split(' (')[0] }}</strong>
+                {% if u.nom|split(' (')|length > 1 %}<small>({{ u.nom|split(' (')[1]|trim(')') }})</small>{% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+    <div class="titre-ligne">
+        <h2>Nos meilleures ventes</h2>
+        <a href="{{ path('app_catalogue') }}">Voir toute la sélection {{ m.icone('arrow-right') }}</a>
+    </div>
+    <div class="produits-grille produits-grille--4">
+        {% for produit in meilleuresVentes %}
+            {% include 'animalerie/_carte_produit.html.twig' %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="bandeau-conseils">
+    {{ m.icone('paw-print') }}
+    <p><strong>Des conseils et astuces</strong><br>pour le bien-être de vos animaux</p>
+    <a class="btn btn--clair" href="{{ path('app_catalogue') }}">Accéder aux conseils {{ m.icone('arrow-right') }}</a>
+    <div class="bandeau-conseils__photos" aria-hidden="true">
+        <img src="{{ asset('images/cutouts/chien.png') }}" alt="">
+        <img src="{{ asset('images/cutouts/chat.png') }}" alt="">
+    </div>
+</section>
+
+<section>
+    <div class="titre-ligne">
+        <h2>Pour chaque animal</h2>
+        <span class="compteur">{{ animaux|length }} animaux</span>
+    </div>
+    <div class="animaux-grille">
+        {% for a in animaux %}
+            <a class="animal" href="{{ path('app_catalogue', {slug: a.slug}) }}">
+                <span class="animal__photo">
+                    {% if a.image %}<img src="{{ asset(a.image) }}" alt="{{ a.nom }}" loading="lazy">{% endif %}
+                </span>
+                <strong>{{ a.nom }}</strong>
+                <small>{{ m.univers(a.parent.slug) }} {{ a.parent.nom|split(' (')[0] }}</small>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

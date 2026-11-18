@@ -1,0 +1,15 @@
+{# Icône SVG inline (fichiers dans templates/icons/), colorée via currentColor. #}
+{% macro icone(nom, classe = '') %}<span class="ico {{ classe }}" aria-hidden="true">{{ source('icons/' ~ nom ~ '.svg')|raw }}</span>{% endmacro %}
+
+{# Icône de l'univers (chiens, chats...) à partir de son slug. #}
+{% macro univers(slug, classe = '') %}{% import _self as m %}{{ m.icone({
+    chiens: 'dog',
+    chats: 'cat',
+    nac: 'rabbit',
+    oiseaux: 'bird',
+    poissons: 'fish',
+    reptiles: 'turtle',
+    equides: 'horse',
+}[slug] ?? 'paw-print', classe) }}{% endmacro %}
+
+{% macro prix(valeur) %}{{ valeur|number_format(2, ',', ' ') }} €{% endmacro %}

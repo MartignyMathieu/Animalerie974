@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Animalerie 974{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('styles/animalerie.css') }}">
+</head>
+<body>
+{% import 'animalerie/_macros.html.twig' as m %}
+<header class="top">
+    <div class="top__row">
+        <a class="logo" href="{{ path('app_accueil') }}">
+            <span class="logo__patte">{{ m.icone('paw-print') }}</span>
+            <span>
+                <strong class="logo__nom">Animalerie <em>974</em></strong>
+                <small class="logo__slogan">Tout pour vos animaux</small>
+            </span>
+        </a>
+
+        <form class="recherche" action="{{ path('app_catalogue') }}" method="get" role="search">
+            {{ m.icone('magnifying-glass') }}
+            <input type="search" name="q" value="{{ recherche ?? '' }}" placeholder="Rechercher un produit, une marque..." aria-label="Rechercher">
+        </form>
+
+        <nav class="actions" aria-label="Compte">
+            <a class="actions__item" href="#">{{ m.icone('question') }}<small>Aide</small></a>
+            <a class="actions__item" href="#">{{ m.icone('user') }}<small>Mon compte</small></a>
+            <a class="actions__item" href="#">{{ m.icone('shopping-cart') }}<small>Panier</small><b class="actions__badge">0</b></a>
+        </nav>
+    </div>
+
+    <div class="top__row top__row--nav">
+        <a class="btn btn--menu" href="{{ path('app_catalogue') }}">{{ m.icone('list') }} Tous les produits <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+        <nav class="univers-nav" aria-label="Univers">
+            {% for u in univers %}
+                <a class="{{ categorie is defined and categorie and categorie.univers.id == u.id ? 'is-active' }}"
+                   href="{{ path('app_catalogue', {slug: u.slug}) }}">
+                    {{ m.univers(u.slug) }} {{ u.nom|split(' (')[0] }}
+                </a>
+            {% endfor %}
+            <a href="#">{{ m.icone('paw-print') }} Conseils</a>
+        </nav>
+    </div>
+</header>
+
+<main class="page">
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="pied">
+    <div class="pied__haut">
+        <div class="pied__marque">
+            <span class="logo__nom">Animalerie <em>974</em></span>
+            <p>Votre animalerie en ligne à La Réunion : alimentation, accessoires et conseils pour tous vos compagnons.</p>
+        </div>
+        <div>
+            <h4>Nos univers</h4>
+            <ul>
+                {% for u in univers %}
+                    <li><a href="{{ path('app_catalogue', {slug: u.slug}) }}">{{ u.nom|split(' (')[0] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h4>Informations</h4>
+            <ul>
+                <li>{{ m.icone('truck') }} Livraison à La Réunion</li>
+                <li>{{ m.icone('credit-card') }} Paiement sécurisé</li>
+                <li>{{ m.icone('map-pin') }} Livraison sur toute l'île</li>
+            </ul>
+        </div>
+    </div>
+    <p class="pied__bas">© Animalerie 974 – Votre animalerie en ligne à La Réunion</p>
+</footer>
+</body>
+</html>
