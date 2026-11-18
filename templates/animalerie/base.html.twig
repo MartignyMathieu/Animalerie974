@@ -8,6 +8,7 @@
 </head>
 <body>
 {% import 'animalerie/_macros.html.twig' as m %}
+{% set nav_univers = univers_racines() %}
 <header class="top">
     <div class="top__row">
         <a class="logo" href="{{ path('app_accueil') }}">
@@ -24,16 +25,16 @@
         </form>
 
         <nav class="actions" aria-label="Compte">
-            <a class="actions__item" href="#">{{ m.icone('question') }}<small>Aide</small></a>
-            <a class="actions__item" href="#">{{ m.icone('user') }}<small>Mon compte</small></a>
-            <a class="actions__item" href="#">{{ m.icone('shopping-cart') }}<small>Panier</small><b class="actions__badge">0</b></a>
+            <a class="actions__item" href="{{ path('app_aide') }}">{{ m.icone('question') }}<small>Aide</small></a>
+            <a class="actions__item" href="{{ path('app_compte') }}">{{ m.icone('user') }}<small>{{ app.user ? app.user.prenom : 'Mon compte' }}</small></a>
+            <a class="actions__item" href="{{ path('app_panier') }}" aria-label="Panier ({{ panier_nombre() }} article{{ panier_nombre() > 1 ? 's' }})">{{ m.icone('shopping-cart') }}<small>Panier</small><b class="actions__badge">{{ panier_nombre() }}</b></a>
         </nav>
     </div>
 
     <div class="top__row top__row--nav">
         <a class="btn btn--menu" href="{{ path('app_catalogue') }}">{{ m.icone('list') }} Tous les produits <svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
         <nav class="univers-nav" aria-label="Univers">
-            {% for u in univers %}
+            {% for u in nav_univers %}
                 <a class="{{ categorie is defined and categorie and categorie.univers.id == u.id ? 'is-active' }}"
                    href="{{ path('app_catalogue', {slug: u.slug}) }}">
                     {{ m.univers(u.slug) }} {{ u.nom|split(' (')[0] }}
@@ -45,6 +46,11 @@
 </header>
 
 <main class="page">
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash flash--{{ type }}" role="status">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
     {% block body %}{% endblock %}
 </main>
 
@@ -57,7 +63,7 @@
         <div>
             <h4>Nos univers</h4>
             <ul>
-                {% for u in univers %}
+                {% for u in nav_univers %}
                     <li><a href="{{ path('app_catalogue', {slug: u.slug}) }}">{{ u.nom|split(' (')[0] }}</a></li>
                 {% endfor %}
             </ul>

@@ -1,0 +1,25 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Créer un compte – Animalerie 974{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<section class="auth">
+    <div class="auth__carte">
+        <span class="auth__icone">{{ m.icone('user') }}</span>
+        <h1>Créer un compte</h1>
+        <p class="auth__sous-titre">Gardez votre panier et commandez plus vite.</p>
+
+        {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.plainPassword.first) }}
+            {{ form_row(form.plainPassword.second) }}
+            <button class="btn btn--block" type="submit">Créer mon compte</button>
+        {{ form_end(form) }}
+
+        <p class="auth__pied">Déjà inscrit ? <a href="{{ path('app_connexion') }}">Se connecter</a></p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Connexion – Animalerie 974{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<section class="auth">
+    <div class="auth__carte">
+        <span class="auth__icone">{{ m.icone('user') }}</span>
+        <h1>Connexion</h1>
+        <p class="auth__sous-titre">Retrouvez votre panier et vos informations.</p>
+
+        {% if erreur %}
+            <div class="flash flash--erreur" role="alert">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form class="formulaire" method="post" action="{{ path('app_connexion') }}">
+            <div>
+                <label for="username">E-mail</label>
+                <input type="email" id="username" name="_username" value="{{ dernier_email }}" autocomplete="email" required autofocus>
+            </div>
+            <div>
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="_password" autocomplete="current-password" required>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button class="btn btn--block" type="submit">Se connecter</button>
+        </form>
+
+        <p class="auth__pied">Pas encore de compte ? <a href="{{ path('app_inscription') }}">Créer un compte</a></p>
+    </div>
+</section>
+{% endblock %}

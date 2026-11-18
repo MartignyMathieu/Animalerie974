@@ -1,0 +1,62 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Mon panier – Animalerie 974{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<p class="fil"><a href="{{ path('app_accueil') }}">Accueil</a> › Mon panier</p>
+
+<div class="titre-ligne">
+    <h1>Mon panier</h1>
+    {% if panier and panier.lignes|length %}<span class="compteur">{{ panier.nbArticles }} article{{ panier.nbArticles > 1 ? 's' }}</span>{% endif %}
+</div>
+
+{% if not panier or panier.lignes is empty %}
+    <div class="vide vide--panier">
+        {{ m.icone('shopping-cart', 'ico--xl') }}
+        <p>Votre panier est vide.</p>
+        <a class="btn" href="{{ path('app_catalogue') }}">Découvrir nos produits {{ m.icone('arrow-right') }}</a>
+    </div>
+{% else %}
+    <div class="panier">
+        <ul class="panier__lignes">
+            {% for ligne in panier.lignes %}
+                {% set produit = ligne.produit %}
+                <li class="panier__ligne">
+                    <div class="panier__visuel{{ produit.image and 'packshots' in produit.image ? ' panier__visuel--packshot' }}">
+                        {% if produit.image %}<img src="{{ asset(produit.image) }}" alt="" loading="lazy">{% else %}{{ m.univers(produit.categorie.univers.slug) }}{% endif %}
+                    </div>
+                    <div class="panier__infos">
+                        <a class="panier__nom" href="{{ path('app_catalogue', {slug: produit.categorie.slug}) }}">{{ produit.nom }}</a>
+                        <span class="panier__desc">{{ produit.description }}</span>
+                        <span class="panier__unitaire">{{ m.prix(produit.prixActuel) }} l'unité</span>
+                    </div>
+                    <form class="panier__quantite" method="post" action="{{ path('app_panier_modifier', {id: produit.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                        <label class="sr-only" for="q{{ produit.id }}">Quantité de {{ produit.nom }}</label>
+                        <input id="q{{ produit.id }}" type="number" name="quantite" value="{{ ligne.quantite }}" min="0" max="{{ produit.stock }}">
+                        <button class="btn btn--clair btn--petit" type="submit">Mettre à jour</button>
+                    </form>
+                    <strong class="panier__soustotal">{{ m.prix(ligne.sousTotal) }}</strong>
+                    <form method="post" action="{{ path('app_panier_retirer', {id: produit.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('panier') }}">
+                        <button class="lien-bouton" type="submit" aria-label="Retirer {{ produit.nom }} du panier">Retirer</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <aside class="panier__resume">
+            <h2>Récapitulatif</h2>
+            <dl>
+                <dt>Sous-total</dt><dd>{{ m.prix(panier.total) }}</dd>
+                <dt>Livraison</dt><dd>Calculée à l'étape suivante</dd>
+            </dl>
+            <p class="panier__total"><span>Total</span><strong>{{ m.prix(panier.total) }}</strong></p>
+            <button class="btn btn--block" type="button" disabled>Commander (bientôt disponible)</button>
+            <a class="btn btn--clair btn--block" href="{{ path('app_catalogue') }}">Continuer mes achats</a>
+        </aside>
+    </div>
+{% endif %}
+{% endblock %}

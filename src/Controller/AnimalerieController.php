@@ -35,7 +35,6 @@ final class AnimalerieController extends AbstractController
         }
 
         return $this->render('animalerie/catalogue.html.twig', [
-            'univers' => $categorieRepository->findBy(['parent' => null], ['id' => 'ASC']),
             'categorie' => $categorie,
             // Sous-catégories de l'univers courant (ou frères si on est déjà sur un animal).
             'animaux' => $categorie ? $categorieRepository->findBy(['parent' => $categorie->getUnivers()], ['id' => 'ASC']) : [],

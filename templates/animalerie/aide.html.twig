@@ -1,0 +1,38 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Aide – Animalerie 974{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<p class="fil"><a href="{{ path('app_accueil') }}">Accueil</a> › Aide</p>
+
+<div class="titre-ligne">
+    <h1>Comment pouvons-nous vous aider ?</h1>
+</div>
+
+<div class="aide">
+    <section class="aide__faq">
+        <h2>Questions fréquentes</h2>
+        {% for item in faq %}
+            <details class="faq">
+                <summary>{{ item.question }}</summary>
+                <p>{{ item.reponse }}</p>
+            </details>
+        {% endfor %}
+    </section>
+
+    <section class="aide__contact" id="contact">
+        <h2>{{ m.icone('headset') }} Nous écrire</h2>
+        <p class="auth__sous-titre">Un conseil, une question sur une commande ? Nous vous répondons rapidement.</p>
+
+        {{ form_start(form, {attr: {class: 'formulaire', novalidate: 'novalidate'}}) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.sujet) }}
+            {{ form_row(form.message) }}
+            <button class="btn btn--block" type="submit">Envoyer mon message</button>
+        {{ form_end(form) }}
+    </section>
+</div>
+{% endblock %}
