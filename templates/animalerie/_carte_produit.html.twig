@@ -1,7 +1,11 @@
 {% import 'animalerie/_macros.html.twig' as m %}
 <article class="carte">
     {% if produit.prixPromo %}<span class="carte__promo">Promo</span>{% endif %}
-    <button class="carte__coeur" type="button" aria-label="Ajouter aux favoris">{{ m.icone('heart') }}</button>
+    {% set favori = est_favori(produit) %}
+    <form method="post" action="{{ path('app_favori_basculer', {id: produit.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('favoris') }}">
+        <button class="carte__coeur{{ favori ? ' is-actif' }}" type="submit" aria-pressed="{{ favori ? 'true' : 'false' }}" aria-label="{{ favori ? 'Retirer des favoris' : 'Ajouter aux favoris' }}">{{ m.icone('heart') }}</button>
+    </form>
 
     <div class="carte__visuel{{ produit.image and 'packshots' in produit.image ? ' carte__visuel--packshot' }}">
         {% if produit.image %}

@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/panier')]
 final class PanierController extends AbstractController
 {
+    use RetourPrecedenteTrait;
+
     #[Route('', name: 'app_panier', methods: ['GET'])]
     public function index(PanierService $panier): Response
     {
@@ -23,7 +25,7 @@ final class PanierController extends AbstractController
     public function ajouter(Produit $produit, Request $request, PanierService $panier): Response
     {
         if (!$this->jetonValide($request)) {
-            return $this->retour($request);
+            return $this->retour($request, 'app_panier');
         }
 
         if ($panier->ajouter($produit, max(1, $request->request->getInt('quantite', 1))) > 0) {
@@ -32,7 +34,7 @@ final class PanierController extends AbstractController
             $this->addFlash('erreur', \sprintf('« %s » n\'est plus disponible en quantité suffisante.', $produit->getNom()));
         }
 
-        return $this->retour($request);
+        return $this->retour($request, 'app_panier');
     }
 
     #[Route('/modifier/{id}', name: 'app_panier_modifier', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -64,16 +66,5 @@ final class PanierController extends AbstractController
         $this->addFlash('erreur', 'Votre session a expiré, veuillez réessayer.');
 
         return false;
-    }
-
-    /** Revient sur la page d'origine si elle appartient au site, sinon sur le panier. */
-    private function retour(Request $request): RedirectResponse
-    {
-        $referer = (string) $request->headers->get('referer');
-        if ('' !== $referer && str_starts_with($referer, $request->getSchemeAndHttpHost().'/')) {
-            return $this->redirect($referer);
-        }
-
-        return $this->redirectToRoute('app_panier');
     }
 }

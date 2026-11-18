@@ -382,3 +382,7 @@ img { display: block; }
 .menu__liste a { display: block; padding: 10px 14px; border-radius: 10px; font-weight: 600; }
 .menu__liste a:hover { background: var(--vert-clair); color: var(--vert-fonce); }
 .carte__type { color: var(--vert); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ----- Favoris : cœur plein quand le produit est favori ----- */
+.carte__coeur.is-actif { color: var(--rouge); }
+.carte__coeur.is-actif svg path[opacity] { opacity: 1; }

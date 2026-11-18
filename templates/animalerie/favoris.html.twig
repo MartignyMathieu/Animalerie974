@@ -1,0 +1,28 @@
+{% extends 'animalerie/base.html.twig' %}
+
+{% block title %}Mes favoris – Animalerie 974{% endblock %}
+
+{% block body %}
+{% import 'animalerie/_macros.html.twig' as m %}
+
+<p class="fil"><a href="{{ path('app_accueil') }}">Accueil</a> › Mes favoris</p>
+
+<div class="titre-ligne">
+    <h1>Mes favoris</h1>
+    {% if produits %}<span class="compteur">{{ produits|length }} produit{{ produits|length > 1 ? 's' }}</span>{% endif %}
+</div>
+
+{% if produits is empty %}
+    <div class="vide vide--panier">
+        {{ m.icone('heart', 'ico--xl') }}
+        <p>Vous n'avez pas encore de favoris. Cliquez sur le cœur d'un produit pour le retrouver ici.</p>
+        <a class="btn" href="{{ path('app_catalogue') }}">Découvrir nos produits {{ m.icone('arrow-right') }}</a>
+    </div>
+{% else %}
+    <div class="produits-grille">
+        {% for produit in produits %}
+            {% include 'animalerie/_carte_produit.html.twig' %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

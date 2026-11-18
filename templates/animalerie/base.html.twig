@@ -24,8 +24,9 @@
             <input type="search" name="q" value="{{ recherche ?? '' }}" placeholder="Rechercher un produit, une marque..." aria-label="Rechercher">
         </form>
 
-        <nav class="actions" aria-label="Aide et panier">
+        <nav class="actions" aria-label="Aide, favoris et panier">
             <a class="actions__item" href="{{ path('app_aide') }}">{{ m.icone('question') }}<small>Aide</small></a>
+            <a class="actions__item" href="{{ path('app_favoris') }}" aria-label="Favoris ({{ favoris_nombre() }})">{{ m.icone('heart') }}<small>Favoris</small>{% if favoris_nombre() %}<b class="actions__badge">{{ favoris_nombre() }}</b>{% endif %}</a>
             <a class="actions__item" href="{{ path('app_panier') }}" aria-label="Panier ({{ panier_nombre() }} article{{ panier_nombre() > 1 ? 's' }})">{{ m.icone('shopping-cart') }}<small>Panier</small><b class="actions__badge">{{ panier_nombre() }}</b></a>
         </nav>
     </div>
